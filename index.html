@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>صيدلية حفصي</title>
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background: #1e1e1e;
+      color: #00ff00;
+      direction: rtl;
+      padding: 50px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #000;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 20px #00ff00;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #00ff00;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: #333;
+      color: #00ff00;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      background-color: #444;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .result.success {
+      color: #00ff00;
+    }
+
+    .result.error {
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>
+      صيدلية حفصي
+    </h1>
+    <input type="text" id="assInput" placeholder="أدخل رقم ASS...">
+    <div class="result" id="resultBox"></div>
+  </div>
+
+  <script>
+    const patients = [
+      { ass: "792152002253", name: "شريط وردة" },
+      { ass: "780371010157", name: "لخويمس عقيلة" },
+      { ass: "661924000359", name: "ونيسي بديعة" },
+      { ass: "810120009554", name: "ثورية دردوري" },
+      { ass: "542566000256", name: "قدع صالح" },
+      { ass: "611095000556", name: "زغدي عايشة" },
+      { ass: "600073009448", name: "بهانة بلقاسم" },
+      { ass: "760661002947", name: "طهراوي السعيد" },
+      { ass: "700098001255", name: "شايع نصيرة" },
+      { ass: "660501000570", name: "زغدي محمد الصالح" },
+      { ass: "822198004438", name: "زغدي هدى" },
+      { ass: "870526017541", name: "جهاد غنامي" },
+      { ass: "600094027742", name: "معمري الزهرة" },
+      { ass: "590500006558", name: "مدخل احمد" },
+      { ass: "580442005453", name: "زغدي الطاهر" },
+      { ass: "400990001656", name: "طواهري محمد" },
+      { ass: "840332022161", name: "سراي نورة" },
+      { ass: "640456008245", name: "عثماني وصال" },
+      { ass: "572237000162", name: "غنامي فضيلة" },
+      { ass: "852582002245", name: "محبوب بشيرة" },
+      { ass: "794126001847", name: "نان وفاء" },
+      { ass: "800049032455", name: "زغدي السعيد" },
+      { ass: "610794001550", name: "بن مبارك سعيدة" },
+      { ass: "661380002551", name: "زربيط نجمة" },
+      { ass: "642184001551", name: "بيكي مسعودة" },
+      { ass: "562166001157", name: "زغدي خديجة" },
+      { ass: "540074012557", name: "تواتي حميد" },
+      { ass: "540694002647", name: "حفصي محمد" },
+      { ass: "610026000571", name: "حاج زواري فرحات" },
+      { ass: "540349011953", name: "منصور مبروكة" },
+      { ass: "590665002449", name: "حمي بهية" },
+      { ass: "671152004948", name: "صوادقية مباركة" },
+      { ass: "570988000247", name: "تواتي تبر" },
+      { ass: "583614000360", name: "عبيد عائشة" },
+      { ass: "670342000265", name: "ديدي محمد الحبيب" },
+      { ass: "660144001165", name: "ديدي مريم" },
+      { ass: "620591001851", name: "نجعي جمال" },
+      { ass: "562166001157", name: "مسعودي بلقاسم" },
+      { ass: "560092002356", name: "شمسة محي الدين" },
+      { ass: "640557011751", name: "وصيف عمران سعاد" },
+      { ass: "531603002863", name: "طواهري تجانية" },
+      { ass: "620216001271", name: "غالي منير" },
+      { ass: "590665002449", name: "زغدي علي" },
+      { ass: "445612000166", name: "شمسة البشير" },
+      { ass: "540375007742", name: "ابراهيم بلحرصة" },
+      { ass: "861687006925", name: "زغدي ياسين - امجد - شايع هنية" },
+      { ass: "580304007159", name: "زواري فرحات مريم" },
+      { ass: "812587004042", name: "سرهود فتيحة" },
+      { ass: "870526017541", name: "حزيتي عبد الحفيظ - غنامي جهاد" },
+      { ass: "650830002361", name: "غنامي بشير" },
+      { ass: "752497000443", name: "قدور عبد الله" },
+      { ass: "571142000168", name: "زغدي على - زغدي زازية" },
+      { ass: "400657005157", name: "بيكي ام هاني" },
+      { ass: "570988000247", name: "لهزيل سايح - تواتي تبر" },
+      { ass: "600004012276", name: "بريبش صافية" },
+      { ass: "421684000358", name: "حبي مبروكة" },
+      { ass: "670891002742", name: "عمامرة مباركة" },
+      { ass: "841620000463", name: "مزيو محمد" },
+      { ass: "510061005560", name: "مقدود فاطمة" },
+      { ass: "550001019163", name: "نصير محمد" },
+      { ass: "541180002953", name: "نينوح سعد" },
+      { ass: "600893002054", name: "بن مبارك عمر + فاطمة" },
+      { ass: "670143034849", name: "بده زكري رشيدة" },
+      { ass: "590031040465", name: "بيكي عمار + شلغوم زهرة" },
+      { ass: "440507002467", name: "بشي بشير" },
+      { ass: "610281018248", name: "بن سعود فريدة" },
+      { ass: "590113027553", name: "بيكي زينب" },
+      { ass: "480939000158", name: "بيرك قايمة" },
+      { ass: "590735002454", name: "مسغوني لمين - بوجزة مريم" },
+      { ass: "510180007354", name: "بوطالبي صالح" },
+      { ass: "583046000358", name: "عقاب طاهر - عقاب بشيرة" },
+      { ass: "513601000273", name: "عازب شيخ صالح" },
+      { ass: "540877003446", name: "عمامرة محمد - العمري سليمة" },
+      { ass: "630310007560", name: "عمامرة اسماعيل" },
+      { ass: "360187007940", name: "عمامرة مبروكة" },
+      { ass: "921117010561", name: "عاد محمد الصالح" },
+      { ass: "510061005560", name: "عبيدي سعد سليمان" },
+      { ass: "903651001452", name: "عوينات حسين" },
+      { ass: "440159004059", name: "عمامرة عمار - عمامرة مبروكة" },
+      { ass: "701689003046", name: "عقاب مشري" },
+      { ass: "430180009251", name: "عمامرة عائشة" }
+    ];
+
+    const input = document.getElementById("assInput");
+    const resultBox = document.getElementById("resultBox");
+
+    input.addEventListener("input", () => {
+      const search = input.value.trim();
+      if (search === "") {
+        resultBox.textContent = "";
+        resultBox.className = "result";
+        return;
+      }
+
+      const patient = patients.find(p => p.ass === search);
+      if (patient) {
+        resultBox.textContent = `اسم المريض: ${patient.name}`;
+        resultBox.className = "result success";
+      } else {
+        resultBox.textContent = "لا يوجد مريض بهذا الرقم.";
+        resultBox.className = "result error";
+      }
+    });
+  </script>
+
+</body>
+</html>
